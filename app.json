@@ -10,7 +10,13 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "name": "Seu App",
+      "slug": "seu-app",
+      "platforms": [
+        "ios",
+        "android"
+      ]
     },
     "ios": {
       "supportsTablet": true
@@ -19,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.onterapiaapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

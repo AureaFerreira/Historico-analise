@@ -1,26 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import Header from '../../components/geral/Header';
+import JitsiConference from './JitsiConference';
 
-export default function IniciarSessao() {
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Header corFundo="#f43f5e" />
-      <Text style={styles.titulo}>Iniciar Sessão</Text>
-    </View>
+    <div>
+      <h1>Minha Videoconferência com Jitsi</h1>
+      <JitsiConference />
+    </div>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f7f7',
-  },
-  titulo: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: 20,
-    color: '#1F2937',
-    textAlign: 'center',
-    marginTop: 12,
-  },
-});
+export default App;
