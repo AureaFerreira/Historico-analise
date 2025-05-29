@@ -1,10 +1,9 @@
-import React from 'react';
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import Header from '@/components/geral/header';
 import { useAppContext } from '@/components/provider';
 import CardHomePsi from '@/components/psicologo/cardHomePsi';
-import { Link } from 'expo-router';
-import Header from '@/components/geral/header';
 import { Ionicons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ListaPacientes() {
     const { pacientes } = useAppContext();
@@ -14,7 +13,15 @@ export default function ListaPacientes() {
             <Header corFundo={'#F37187'} href='psicologo/home' />
             <View style={styles.headerContainer}>
                 <Text style={styles.title}>Meus Pacientes</Text>
+
+                <Link href="psicologo/pacientes/cadastrarSessao" asChild>
+                    <TouchableOpacity style={styles.botaoNovaSessao}>
+                        <Ionicons name="add-circle-outline" size={20} color="white" />
+                        <Text style={styles.textoBotao}>Nova Sessão</Text>
+                    </TouchableOpacity>
+                </Link>
             </View>
+
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {pacientes.length > 0 ? (
                     pacientes.map(paciente => (
@@ -35,6 +42,8 @@ export default function ListaPacientes() {
 const styles = StyleSheet.create({
     screenContainer: {
         flex: 1,
+            backgroundColor: 'white',
+
     },
     headerContainer: {
         alignItems: 'center',
@@ -50,9 +59,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingBottom: 20,
     },
-    
-    icon: {
-        marginLeft: 'auto',
+    botaoNovaSessao: {
+        marginTop: 10,
+        backgroundColor: '#F37187',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        borderRadius: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    textoBotao: {
+        color: 'white',
+        fontFamily: 'Poppins-Light',
+        fontSize: 15,
     },
     noPatients: {
         textAlign: 'center',

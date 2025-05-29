@@ -1,45 +1,48 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from "react-native";
-import { Card } from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
-import logoOnTerapia from '@/assets/images/logoOnTerapia.png'
-import { Link } from 'expo-router';
+import logoOnTerapia from '@/assets/images/logoOnTerapia.png';
 import { useAppContext } from '@/components/provider';
-import CardProximaSessao from "@/components/paciente/cardProximaSessao";
-
+import { Ionicons } from '@expo/vector-icons';
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Link } from 'expo-router';
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Badge, Card } from 'react-native-paper';
 export default function HomePaciente() {
     const { usuarioAtual, buscaUsuarioId, sessao_mais_proxima_paciente } = useAppContext();
     const [user, setUser] = useState(null);
     const [sessaoProxima, setSessaoProxima] = useState(null);
     const [nome, setNomePsicologo] = useState(null);
+    const hoje = new Date();
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const userData = await buscaUsuarioId(usuarioAtual.id);
                 setUser(userData);
+                // console.log(userData)
             } catch (error) {
                 console.error('Erro ao buscar dados do usuário:', error);
             }
         };
-        const fetchSessao = async () => {
-            try {
-                const dados = await sessao_mais_proxima_paciente(usuarioAtual.id);
-                setSessaoProxima(dados);
-                if (dados && dados.Psicologo) {
-                    setNomePsicologo(dados.Psicologo.nome);
-                }
-            } catch (error) {
-                console.error('Erro ao buscar sessão mais próxima:', error);
-            }
-        }
+        // const fetchSessao = async () => {
+        //     try {
+        //         const dados = await sessao_mais_proxima_paciente(usuarioAtual.id);
+        //         setSessaoProxima(dados);
+        //         console.log(dados)
+        //         if (dados && dados.Psicologo) {
+        //             setNomePsicologo(dados.Psicologo.nome);
+        //         }
+        //     } catch (error) {
+        //         console.error('Erro ao buscar sessão mais próxima:', error);
+        //     }
+        // }
         if (usuarioAtual) {
             fetchUserData();
-            fetchSessao();
+            // fetchSessao();
         }
     }, [usuarioAtual]);
 
-    if (!user || !sessaoProxima) {
+    if (!user) {
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#477BDE" />
@@ -59,33 +62,42 @@ export default function HomePaciente() {
                         <Image source={logoOnTerapia} style={styles.imagem} />
                     </View>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    <View style={[styles.rowCapa, { marginLeft: 2 }]}>
-
-                        <Link href='paciente/perfilPaciente'>
-                            <Ionicons name="person-outline"
-                                size={30}
-                                color={'white'} />
-                        </Link>
-                    </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={styles.rowCapa}>
-                        <Text style={{ color: 'white', fontSize: 18, fontFamily: 'Poppins-Light' }}> Olá, <Text style={{ textDecoration: 'bold' }}>{user.data.nome.split(' ')[0]}</Text >!
+                        <Text style={{ color: 'white', fontSize: 18, fontFamily: 'Poppins-Light' }}> Olá, <Text style={{ fontFamily: 'Poppins-Bold' }}>{user.data.nome.split(' ')[0]}</Text >!
                         </Text>
-                        <Text style={{ color: '#ffff', fontFamily: 'Poppins-Light' }}>Pronto para a sessão?</Text>
+
                     </View>
-                    <View style={[styles.rowCapa, { marginRight: 2 }]}>
+                    <View style={[styles.rowCapa]}>
                         <Link href={"paciente/notificacaoPaciente"}>
                             <View style={styles.notificacao}>
+                                <Badge style={{ color: 'white', fontSize: 12, fontFamily: 'Poppins-Light', backgroundColor: '#70A1FF' }}>2</Badge>
                                 <Ionicons name="notifications-outline"
                                     size={25}
                                     color={'white'} />
+
                             </View>
                         </Link>
+
                     </View>
+
                 </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, marginBottom: 8, }}>
+                    <Ionicons name="calendar-clear-outline"
+                        size={14}
+                        color={'white'} style={{ marginRight: 5 }} />
+                    <Text style={{ fontFamily: 'Poppins-Light', color: 'white', fontSize: 12, alignItems: 'center' }}>
+
+                        {format(hoje, "EE, dd 'de' MMMM", { locale: ptBR })}
+                    </Text>
+                    {/* <Text style={{fontFamily:'Poppins-Regular', color:'white', marginLeft:8}}>
+                        Seja a mudança que você quer ver no mundo
+                    </Text> */}
+                </View>
+
             </View>
             <View style={{ margin: 10 }}>
-                <View style={{ flex: 1, flexDirection: 'row'}}>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
                     <View style={{ flexDirection: 'column', width: 'auto', height: 'auto' }}>
                         <Link href={"paciente/psicologos"}>
                             <Card style={styles.cardVerd}>
@@ -100,7 +112,7 @@ export default function HomePaciente() {
                             </Card>
                         </Link>
                     </View>
-                    <View style={{ flex: 1, flexDirection: 'row', marginLeft:10}}>
+                    <View style={{ flex: 1, flexDirection: 'row', marginLeft: 10 }}>
                         <View style={{ flexDirection: 'column', width: 'auto', height: 'auto' }}>
                             <Link href={"paciente/sessoes/sessao"} >
                                 <Card style={styles.cardVerd}>
@@ -117,13 +129,13 @@ export default function HomePaciente() {
                         </View>
                     </View>
                 </View>
-                <View style={{ marginVertical: 10}}>
+                {/* <View style={{ marginVertical: 10}}>
                     <Link href={`paciente/sessoes/${sessaoProxima.idSessao}`} style={styles.cardSessão}>
                         <CardProximaSessao
                             bgColor={'#89CC24'}
                             sessaoProxima={{ sessaoProxima }} nome={{ nome }}></CardProximaSessao>
                     </Link>
-                </View>
+                </View> */}
             </View>
         </ScrollView >
     );
@@ -136,7 +148,7 @@ const styles = StyleSheet.create({
     },
     capa: {
         width: "100%",
-        height: 150,
+        height: 180,
         backgroundColor: "#477BDE",
         borderBottomLeftRadius: 27,
         borderBottomRightRadius: 27,
@@ -148,22 +160,31 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5, // Esta propriedade é para Android
+        paddingHorizontal: 15
 
     },
-
-    imagemContainer: {
-        marginRight: 10,
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: "center",
+    imagem: {
+        width: 30,
+        height: 30,
+        marginTop: 55
+    },
+    // imagemContainer: {
+    //     marginRight: 10,
+    //     flexDirection: 'row',
+    //     width: '100%',
+    //     alignItems: "center",
+    //     justifyContent: 'center',
+    //     marginTop: 30,
+    // },
+    rowCapa: {
+        flexDirection: 'collum',
         justifyContent: 'center',
-        marginTop:30,
+        alignItems: 'center'
     },
-
     textoCardDuplo: {
         fontSize: 18,
         color: "black",
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     tituloSessao: {
         fontSize: 18,
@@ -199,24 +220,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 17,
     },
-    rowCapa: {
-        flexDirection: 'collum',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
+
     notificacao: {
-        backgroundColor: '#70A1FF',
+        // backgroundColor: '#70A1FF',
         width: 53,
         height: 53,
         borderRadius: 18,
         alignItems: 'center',
         justifyContent: 'center'
     },
-    imagem: {
-        width: 40,
-        height: 40,
-        marginTop: 6
-    },
+
     cardVerd: {
         backgroundColor: "white",
         width: 130,
@@ -238,7 +251,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     tituloCardDuplo: {
-        fontFamily: 'Poppins-Medium',
+        fontFamily: 'Poppins-Regular',
         color: '#2c2c2c',
         marginTop: 6,
         fontSize: 16,
@@ -259,7 +272,7 @@ const styles = StyleSheet.create({
         padding: 6,
         borderRadius: 17,
 
-        
+
     },
     textoCardSessao: {
         fontFamily: 'Poppins-Light',

@@ -1,11 +1,10 @@
-import { React, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Linking } from 'react-native';
-import { Card, Button, TextInput, Checkbox } from 'react-native-paper';
 import Header from '@/components/geral/header';
 import { useAppContext } from '@/components/provider';
-import { Link } from 'expo-router';
-import { useLocalSearchParams } from "expo-router";
 import CampoTextoCard from '@/components/psicologo/CampoTextoCard';
+import { Link, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Button, Card, Checkbox } from 'react-native-paper';
 
 
 export default function FichaAvaliacao() {
@@ -31,8 +30,8 @@ export default function FichaAvaliacao() {
     };
 
     return (
-        <ScrollView headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47', fontFamily: 'Poppins-Light' }}>
-            <Header corFundo={"#F37187"} href={`psicologo/anotacoes`}></Header>
+        <ScrollView headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47', fontFamily: 'Poppins-Light' }} style={{backgroundColor:'white'}}>
+            <Header corFundo={"#F37187"} href={`psicologo/anotacoes/${id}`}></Header>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <Text style={styles.titulo}>FICHA DE AVALIAÇÃO</Text>
                 <Text style={{ fontFamily: 'Poppins-Light' }}>Registro e Sessão</Text>

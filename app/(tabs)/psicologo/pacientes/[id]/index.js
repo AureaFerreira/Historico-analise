@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { Card } from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams } from "expo-router";
 import { useAppContext } from '@/components/provider';
-import { Link } from 'expo-router';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Link, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Card } from 'react-native-paper';
 
 const BarraProgresso = ({ totalSessoes, sessoesConcluidas }) => {
     const barras = [];
@@ -71,7 +69,7 @@ export default function PacienteDetalhes() {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={styles.container} style={{backgroundColor:'white'}}>
             <View style={styles.header}>
                 <View style={styles.voltar}>
                     <Link href={`psicologo/pacientes`}>

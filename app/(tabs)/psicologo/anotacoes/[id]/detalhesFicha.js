@@ -1,13 +1,11 @@
-import { React, useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { Card, IconButton, Divider } from 'react-native-paper';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, Link } from "expo-router";
-import { useAppContext } from "@/components/provider";
-import logoOnTerapia from '@/assets/images/logoOnTerapia.png'
 import Header from '@/components/geral/header';
+import { useAppContext } from "@/components/provider";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Card } from 'react-native-paper';
 
 export default function detalhesFicha() {
     const { id } = useLocalSearchParams();
@@ -41,7 +39,7 @@ export default function detalhesFicha() {
     }
 
     return (
-        <ScrollView headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}>
+        <ScrollView headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }} style={{backgroundColor:'white'}}>
             <Header corFundo="#F37187" href={`/psicologo/anotacoes/${paciente.id}`} />
 
             <View style={{ justifyContent: "center", alignItems: "center" }}>

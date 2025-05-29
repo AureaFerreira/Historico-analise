@@ -1,12 +1,12 @@
-import { React, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { Card, IconButton } from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, Link } from "expo-router";
-import { useAppContext } from "@/components/provider";
 import Header from '@/components/geral/header';
+import { useAppContext } from "@/components/provider";
+import { Ionicons } from '@expo/vector-icons';
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Link, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Card, IconButton } from 'react-native-paper';
 
 
 export default function AnotacoesDetalhes() {
@@ -33,7 +33,7 @@ export default function AnotacoesDetalhes() {
     }
 
     return (
-        <View style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }} style={{backgroundColor:'white'}}>
             <Header corFundo="#F37187" href="psicologo/anotacoes" />
 
             <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -70,7 +70,7 @@ export default function AnotacoesDetalhes() {
                     />
                 </Link>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 

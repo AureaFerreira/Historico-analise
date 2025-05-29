@@ -1,3 +1,5 @@
+import AppProvider from "@/components/provider";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import {
   DarkTheme,
   DefaultTheme,
@@ -5,15 +7,12 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import AppProvider from "@/components/provider";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -42,7 +41,7 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
+     <SafeAreaProvider>
       <AppProvider>
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}

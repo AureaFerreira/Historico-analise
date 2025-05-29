@@ -12,6 +12,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "app/(tabs)/psicologo/agenda.js", "components/psicologo/agendaItem.js", "app/(tabs)/index.tsx"  ]
+    "expo-env.d.ts",
+    "app/(tabs)/psicologo/agenda.js",
+    "components/psicologo/agendaItem.js",
+    "app/(tabs)/index.tsx"
+  ]
 }
