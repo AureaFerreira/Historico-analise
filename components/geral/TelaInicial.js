@@ -1,88 +1,62 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Card, Text, Button } from 'react-native-paper';
+import { View, StyleSheet } from 'react-native';
+import { Link } from 'expo-router';
 
-export default function TelaInicial() {
-  const navigation = useNavigation();
-
-  return (
-    <LinearGradient
-    colors={['#477BDE', '#a5b4fc', '#f43f5e']}
-    style={styles.container}
-    start={{ x: 0.1, y: 0 }}
-    end={{ x: 0.9, y: 1 }}
-    locations={[0, 0.5, 1]} // <- este é o segredo!
-    >
-
-      <Image
-        source={require('../../assets/logo-onterapia.png')}
-        style={styles.logo}
-      />
-      <Text style={styles.nomeApp}>OnTerapia</Text>
-      <Text style={styles.title}>Escolha seu perfil</Text>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: '#477BDE' }]}
-          onPress={() => navigation.navigate('LoginPaciente')}
-        >
-          <Text style={styles.buttonText}>Paciente</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: '#f43f5e' }]}
-          onPress={() => navigation.navigate('LoginPsicologo')}
-        >
-          <Text style={styles.buttonText}>Psicólogo</Text>
-        </TouchableOpacity>
-      </View>
-    </LinearGradient>
-  );
-}
+export default function TelaInicial({ onSelecionarPerfil }) {
+    return (
+        <View style={styles.container}>
+            <Card style={{backgroundColor:'white'}}>
+                <Card.Content>
+                    <Text style={styles.title}>Defina seu perfil</Text>
+                    <View style={styles.buttonContainer}>
+                    <Link href='/(tabs)/paciente/home/home'>
+                        <Text style={[styles.button, {backgroundColor:'#477BDE'}]}
+                           
+                        >
+                            Paciente
+                        </Text>
+                        </Link>
+                        <Link href='/(tabs)/psicologo/home'>
+                        <Text
+                           style={[styles.button, {backgroundColor:'#F37187'}]}
+                        >
+                            Psicólogo
+                        </Text>
+                        </Link>
+                    </View>
+                </Card.Content>
+            </Card>
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
-    marginBottom: 10,
-  },
-  nomeApp: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: 26,
-    color: '#fff',
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 30,
-    fontFamily: 'Poppins-SemiBold',
-    color: '#fff',
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    gap: 20,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  buttonText: {
-    fontFamily: 'Poppins-SemiBold',
-    color: '#fff',
-    fontSize: 16,
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        fontFamily:'Poppins-Bold',
+    },
+    title: {
+        fontSize: 24,
+        marginBottom: 10,
+        justifyContent: 'center',
+        textAlign: 'center',
+        fontFamily:'Poppins-Bold',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    button: {
+        marginHorizontal: 5,
+        fontFamily:'Poppins-Light',
+        color:'white',
+        padding:7,
+        borderRadius: 5,
+        
+
+    },
 });

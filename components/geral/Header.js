@@ -1,57 +1,57 @@
 import React from 'react';
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
+import { Link } from 'expo-router'; // ou use o react-router-native se estiver usando react-router
+import logoOnTerapia from '../../assets/images/logoOnTerapia.png';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 
-export default function Header({ corFundo }) {
-  const navigation = useNavigation();
+export default function Header({ corFundo, href }) {
+    return (
+        <View style={[styles.capa, { backgroundColor: corFundo }]}>
+            <View style={styles.container}>
+                <View style={{flex:1}}>
+                    <Link href={href} style={styles.backButton}>
+                        <Ionicons name="chevron-back-circle-outline" size={30} color="white" />
+                    </Link>
+                </View>
+                <View style={{flex:12, justifyContent:'center', alignItems:'center'}}>
+                    <Image source={logoOnTerapia} style={styles.imagem} />
+                </View>
 
-  return (
-    <View style={[styles.capa, { backgroundColor: corFundo }]}>
-      <View style={styles.container}>
-        <View style={{ flex: 1 }}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back-outline" size={24} color="white" />
-          </TouchableOpacity>
+            </View>
         </View>
-        <View style={{ flex: 20, justifyContent: 'center', alignItems: 'center' }}>
-          <Image
-            source={require('../../assets/logo-onterapia.png')}
-            style={styles.imagem}
-          />
-        </View>
-      </View>
-    </View>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
-  capa: {
-    width: '100%',
-    height: 60,
-    justifyContent: 'center',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    marginBottom: 15,
-  },
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-  },
-  backButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imagem: {
-    width: 35,
-    height: 35,
-    marginTop: -10,
-    resizeMode: 'contain',
-  },
+    capa: {
+        width: '100%',
+        height: 100,
+        // Aumentei um pouco a altura para garantir melhor alinhamento vertical
+        justifyContent: 'center',
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5, // Esta propriedade é para Android
+        // marginBottom: ,
+    },
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        // marginTop:
+    },
+    backButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    imagem: {
+        width: 35,
+        height: 35,
+    },
 });
