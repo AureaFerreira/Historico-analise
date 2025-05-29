@@ -1,17 +1,15 @@
-import React, { useState, useEffect, } from 'react';
+import { useEffect, useState, } from 'react';
 
-import { ScrollView, StyleSheet, View, Image, Text, Pressable, ActivityIndicator, FlatList } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
-import { Badge, Card } from 'react-native-paper';
-import logoOnTerapia from '@/assets/images/logoOnTerapia.png'
-import { Link } from 'expo-router';
+import logoOnTerapia from '@/assets/images/logoOnTerapia.png';
+import fotoCli from "@/assets/images/perfilMulher.png";
 import { useAppContext } from '@/components/provider';
-import CardProximaSessao from "@/components/paciente/cardProximaSessao";
-import FraseMotivacional from '../../../components/psicologo/frases';
-import ChecklistModal from '../../../components/psicologo/modal';
+import { Ionicons } from '@expo/vector-icons';
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import fotoCli from "@/assets/images/perfilMulher.png"
+import { Link } from 'expo-router';
+import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Badge, Card } from 'react-native-paper';
+import ChecklistModal from '../../../components/psicologo/modal';
 
 export default function HomePsicologo() {
     const { usuarioAtual, buscaUsuarioId, sessao_mais_proxima } = useAppContext();
@@ -70,7 +68,7 @@ export default function HomePsicologo() {
     };
 
     return (
-        <ScrollView headerBackgroundColor={{ light: '#F37187', dark: '#F37187' }}>
+        <ScrollView style={{backgroundColor:'#f2f2f2'}} headerBackgroundColor={{ light: '#F37187', dark: '#F37187' }} >
             <View style={[styles.capa, { fontFamily: 'Poppins-Light' }]}>
                 <View style={styles.imagemContainer}>
                     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -309,7 +307,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     notificacao: {
-        backgroundColor: '#f37187',
+        // backgroundColor: '#f37187',
         width: 53,
         height: 53,
         borderRadius: 18,

@@ -1,9 +1,8 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Ionicons } from '@expo/vector-icons';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { Tabs } from 'expo-router';
+import React from 'react';
 
 
 export default function TabLayout() {
@@ -12,17 +11,26 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        tabBarStyle: {
+          backgroundColor: '#fff', // Cor de fundo branca
+          borderTopWidth: 0, // Opcional: remove a borda superior
+          elevation: 5, // Opcional: adiciona sombra no Android
+          shadowColor: '#000', // Sombra iOS
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 5,
+        },
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarLabelStyle:{
-          fontFamily:'Poppins-Light'
+        tabBarLabelStyle: {
+          fontFamily: 'Poppins-Light'
         },
       }}>
       <Tabs.Screen
         name="home"
         options={{
-          title:'Home',
-          
+          title: 'Home',
+
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
@@ -32,8 +40,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="pacientes/index"
         options={{
-          title:'Pacientes',
-          
+          title: 'Pacientes',
+
 
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'people' : 'people-outline'} color={color} />
@@ -44,8 +52,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="agenda"
         options={{
-          title:'Agenda',
-          
+          title: 'Agenda',
+
 
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'calendar' : 'calendar-outline'} color={color} />
@@ -57,8 +65,8 @@ export default function TabLayout() {
         name="chat"
 
         options={{
-          title:'Chat',
-          
+          title: 'Chat',
+
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'chatbubble' : 'chatbubble-outline'} color={color} />
           ),
@@ -69,8 +77,8 @@ export default function TabLayout() {
         name="perfilPsicologo"
 
         options={{
-          title:'Perfil',
-          
+          title: 'Perfil',
+
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
           ),
@@ -79,6 +87,12 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="pacientes/[id]/index"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="pacientes/cadastrarSessao"
         options={{
           href: null,
         }}

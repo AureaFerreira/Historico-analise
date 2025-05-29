@@ -1,4 +1,4 @@
-// import React, { useEffect, useState, useMemo } from 'react';
+// import React, { useState, useEffect, useMemo } from 'react';
 // import { SafeAreaView, StyleSheet, View } from 'react-native';
 // import {
 //   Chat,
@@ -9,19 +9,20 @@
 //   MessageType,
 // } from 'stream-chat-react-native';
 // import { StreamChat } from 'stream-chat';
-// import { supabase } from '../../../../utils/supabase';
+// import { supabase } from '../../../../../utils/supabase';
 // import Header from '@/components/geral/header';
 // import { useAppContext } from '@/components/provider';
 
-// // 1. Configuração do Stream Chat (substitua pela sua API key)
-// const apiKey = 'seu_api_key_do_stream'; // Get it from https://getstream.io/dashboard/
+// // Configuração do cliente Stream Chat (substitua 'YOUR_API_KEY' pela sua chave)
+// const apiKey = 'hpdq58us3r9a'; // Obtenha em https://getstream.io/dashboard/
 // const client = StreamChat.getInstance(apiKey);
 
 // export default function ChatScreen() {
 //   const { usuarioAtual } = useAppContext();
+//   const [messages, setMessages] = useState<MessageType[]>([]);
 //   const [loading, setLoading] = useState(true);
 
-//   // 2. Conecta o usuário ao Stream Chat
+//   // Conecta o usuário ao Stream Chat (usando o ID do Supabase como user.id)
 //   useEffect(() => {
 //     const connectUser = async () => {
 //       try {
@@ -30,7 +31,7 @@
 //             id: usuarioAtual.id,
 //             name: usuarioAtual.nome || 'Usuário',
 //           },
-//           client.devToken(usuarioAtual.id) // Em produção, gere tokens no backend!
+//           client.devToken(usuarioAtual.id) // Em produção, use backend para gerar tokens!
 //         );
 //       } catch (error) {
 //         console.error('Erro ao conectar usuário:', error);
@@ -39,54 +40,59 @@
 
 //     connectUser();
 
-//     return () => client.disconnectUser();
+//     return () => {
+//       client.disconnectUser();
+//     };
 //   }, [usuarioAtual]);
 
-//   // 3. Criação do canal (substitua 'terapia' pelo ID do seu chat)
+//   // Canal fixo (substitua 'general' pelo ID do seu canal no Stream)
 //   const channel = useMemo(() => {
-//     return client.channel('messaging', 'terapia-' + usuarioAtual.id, {
-//       name: 'Sessão de Terapia',
-//       members: [usuarioAtual.id, 'psicologo-id'], // Adicione todos os participantes
+//     return client.channel('messaging', 'general', {
+//       name: 'Chat Geral',
+//       members: [usuarioAtual.id],
 //     });
 //   }, []);
 
-//   // 4. Sincronização inicial com o Supabase (opcional)
-//   useEffect(() => {
-//     const fetchMessages = async () => {
-//       const { data } = await supabase
-//         .from('Mensagens')
-//         .select('*')
-//         .order('createdAt', { ascending: true });
+//   // Sincronização com o Supabase (opcional, se quiser manter histórico)
+//   const fetchMessages = async () => {
+//     const { data, error } = await supabase
+//       .from('Mensagens')
+//       .select('*')
+//       .order('createdAt', { ascending: false });
 
-//       if (data) {
-//         // Envia as mensagens antigas para o Stream Chat
-//         await channel.sendMessages(
-//           data.map((m) => ({
-//             text: m.text,
-//             user: { id: m.user },
-//             created_at: new Date(m.createdAt),
-//           }))
-//         );
-//         setLoading(false);
-//       }
-//     };
+//     if (!error) {
+//       const formattedMessages = data.map(formatMessage);
+//       setMessages(formattedMessages);
+//       setLoading(false);
+//     } else {
+//       console.error(error);
+//     }
+//   };
 
-//     fetchMessages();
-//   }, []);
+//   const formatMessage = (message): MessageType => ({
+//     id: message._id,
+//     text: message.text,
+//     created_at: new Date(message.createdAt),
+//     user: {
+//       id: message.user,
+//     },
+//   });
 
 //   return (
 //     <SafeAreaView style={styles.container}>
-//       <Header corFundo="#F37187" href="psicologo/home" />
-      
+//       <Header corFundo="#477BDE" href="paciente/home" />
 //       <Chat client={client}>
 //         <Channel channel={channel}>
 //           <View style={styles.chatContainer}>
-//             <MessageList />
+//             <MessageList 
+//               onEndReached={fetchMessages} 
+//               loading={loading}
+//             />
 //             <MessageInput 
 //               placeholder="Digite sua mensagem"
-//               Input={({ ...props }) => (
+//               Input={() => (
 //                 <View style={styles.inputContainer}>
-//                   <MessageInput.Input {...props} />
+//                   <MessageInput.Input />
 //                   <MessageInput.SendButton />
 //                 </View>
 //               )}
@@ -110,9 +116,10 @@
 //   inputContainer: {
 //     flexDirection: 'row',
 //     alignItems: 'center',
-//     backgroundColor: '#f5f5f5',
+//     backgroundColor: '#f9f9f9',
 //     borderRadius: 20,
 //     paddingHorizontal: 12,
+//     marginHorizontal: 10,
 //     marginBottom: 10,
 //   },
 // });

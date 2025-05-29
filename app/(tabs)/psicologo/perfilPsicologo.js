@@ -1,9 +1,7 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import perfil from '@/assets/images/perfil.png';
-import logo from '@//assets/images/logoOnTerapia.png';
+import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FraseMotivacional from '../../../components/psicologo/frases';
 
 export default function PerfilPsicologo() {
@@ -70,7 +68,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         fontFamily: 'Poppins-Light',
-
+        backgroundColor: '#f2f2f2',
     },
     header: {
         backgroundColor: '#F37187',

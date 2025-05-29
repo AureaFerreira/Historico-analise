@@ -1,34 +1,42 @@
 {
   "expo": {
-    "name": "my-app",
-    "slug": "my-app",
+    "name": "onterapia",
+    "slug": "onterapia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "./assets/images/logoOnTerapia.png",
+    "scheme": "onterapia",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "white"
+      },
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/logoOnTerapia.png",
+      "backgroundColor": "white"
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logoOnTerapia.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "white"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

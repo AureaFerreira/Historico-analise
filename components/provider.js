@@ -1,5 +1,5 @@
-import { useState, createContext, useContext, useEffect } from 'react';
 import { AntDesign } from '@expo/vector-icons';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../utils/supabase';
 
 const AppContext = createContext();
@@ -279,14 +279,14 @@ export default function AppProvider({ children }) {
   const datasDisponiveisPorPsicologo = async (psicologoId) => {
     // Obter a data atual no formato adequado
     const today = new Date().toISOString().split('T')[0]; // formato 'yyyy-mm-dd'
-  
+
     const { data, error } = await supabase
       .from('Agenda')
       .select('id, idPsicologo, data, hora_inicio, disponivel')
       .eq('idPsicologo', psicologoId)
       .eq('disponivel', true)
       .gte('data', today); // Filtrar apenas datas maiores ou iguais a hoje
-  
+
     if (error) {
       console.error('Erro ao buscar dados:', error);
       return [];
@@ -299,7 +299,7 @@ export default function AppProvider({ children }) {
       .select('id, data, hora_inicio')
       .eq('idPsicologo', psicologoId)
       .eq('data', date)
-      .eq('disponivel',true)
+      .eq('disponivel', true)
 
     if (error) {
       console.error('Erro ao buscar dados:', error);
@@ -578,17 +578,19 @@ export default function AppProvider({ children }) {
       if (error) throw error;
 
       if (sessoes.length === 0) {
-        return null;
+        return { mensagem: "Esse paciente não tem sessões marcadas." };
       }
+
 
       const sessoesFuturas = sessoes.filter(sessao => {
         const sessaoDateTime = new Date(`${sessao.data}T${sessao.hora_inicio}`);
         return sessaoDateTime > now;
       });
 
-      if (sessoesFuturas.length === 0) {
-        return null;
+      if (sessoes.length === 0) {
+        return { mensagem: "Esse paciente não tem sessões marcadas." };
       }
+
 
       // Retornando a primeira sessão futura encontrada
       const sessaoMaisProxima = sessoesFuturas[0];
@@ -813,7 +815,7 @@ export default function AppProvider({ children }) {
       buscaPaacienteMeet,
       inserirMeet,
       contratoAssinado,
-      timesSessao, 
+      timesSessao,
       setTimesData
     }}>
       {children}

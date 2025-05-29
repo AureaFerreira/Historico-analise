@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, Modal, TextInput, TouchableOpacity, ToastAndroid, Alert, Platform } from 'react-native';
-import { AgendaList, CalendarProvider, WeekCalendar } from 'react-native-calendars';
-import AgendaItem from '@/components/psicologo/agendaItem';
-import { useAppContext } from '@/components/provider';
 import Header from '@/components/geral/header';
+import { useAppContext } from '@/components/provider';
+import AgendaItem from '@/components/psicologo/agendaItem';
 import { AntDesign } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import { Alert, Modal, Platform, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { AgendaList, CalendarProvider, WeekCalendar } from 'react-native-calendars';
 import { Button } from "react-native-paper";
 
 const Agenda = () => {
@@ -55,7 +55,7 @@ const Agenda = () => {
   };
 
   return (
-    <CalendarProvider date={selectedDate} showTodayButton>
+    <CalendarProvider date={selectedDate} showTodayButton style={{backgroundColor:'white'}}>
       <Header corFundo={'#F37187'} href='psicologo/home' />
       <WeekCalendar
         markedDates={markedDates}

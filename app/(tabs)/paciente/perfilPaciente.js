@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, ActivityIndicator, Image, StyleSheet, TouchableOpacity } from "react-native";
+import Header from '@/components/geral/header';
 import { useAppContext } from '@/components/provider';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { ScrollView } from 'react-native';
-import { Link } from 'expo-router';
-import Header from '@/components/geral/header';
-import { Button } from 'react-native-paper';
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Button } from 'react-native-paper';
 
 export default function PerfilPaciente() {
     const { usuarioAtual, buscaUsuarioId } = useAppContext();
@@ -47,7 +44,7 @@ export default function PerfilPaciente() {
 
     return (
         <ScrollView style={{backgroundColor: "white"}} >
-            <Header corFundo={"#477BDE"} href='paciente/home' style={styles.cabecalho}></Header>
+            <Header corFundo={"#477BDE"} href='/' style={styles.cabecalho}></Header>
             <View style={styles.scrollContainer}>
             <View style={styles.profileImageContainer}>
                 <Image source={{ uri: user.data.imageUrl }} style={styles.profileImage} />

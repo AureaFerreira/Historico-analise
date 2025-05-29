@@ -1,26 +1,27 @@
-import React, { useState } from "react";
+import { useAppContext } from "@/components/provider";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useState } from "react";
 import {
+  ActivityIndicator,
+  Image,
+  Keyboard,
+  Pressable,
   SafeAreaView,
   StyleSheet,
-  View,
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ActivityIndicator
+  View
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useAppContext } from "@/components/provider";
-import { router } from "expo-router";
 
 export default function Login() {
   const { buscaLogin } = useAppContext();
-  const [email, setEmail] = useState("psi");
-  const [senha, setSenha] = useState("1234");
+  const [email, setEmail] = useState('psi');
+  const [senha, setSenha] = useState('1234');
   const [carregando, setCarregando] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const acessarConta = async () => {
     setCarregando(true);
     const tipoUsuario = await buscaLogin(email, senha);
@@ -40,7 +41,7 @@ export default function Login() {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <Pressable onPress={() => Keyboard.dismiss()}>
         <View style={styles.innerContainer}>
           <Image
             source={require("@/assets/images/logoRosa.png")}
@@ -56,9 +57,10 @@ export default function Login() {
                 style={styles.icon}
               />
               <TextInput
-                value={'psi'}
+                value={email}
                 onChangeText={setEmail}
                 style={styles.input}
+                editable
                 placeholderTextColor="#e63946"
               />
             </View>
@@ -72,7 +74,9 @@ export default function Login() {
                 style={styles.icon}
               />
               <TextInput
-                value={'1234'}
+                value={senha}
+                editable
+
                 onChangeText={setSenha}
                 style={styles.input}
                 placeholderTextColor="#F37187"
@@ -101,15 +105,6 @@ export default function Login() {
               )}
             </TouchableOpacity>
 
-            <Text style={styles.orText}>ou</Text>
-
-            <TouchableOpacity style={styles.googleButton}>
-              <Image
-                source={require("@/assets/images/google_logo.png")}
-                style={styles.googleLogo}
-              />
-              <Text style={styles.googleText}>Entrar com Google</Text>
-            </TouchableOpacity>
 
             <TouchableOpacity>
               <Text style={styles.registerText}>
@@ -119,7 +114,7 @@ export default function Login() {
             </TouchableOpacity>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -159,7 +154,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginBottom: 5,
     width: "100%",
-    fontFamily:'Poppins-Light'
+    fontFamily: 'Poppins-Light'
   },
   inputContainer: {
     flexDirection: "row",
@@ -185,15 +180,15 @@ const styles = StyleSheet.create({
     color: "#e63946",
     fontSize: 12,
     marginVertical: 15,
-    fontFamily:'Poppins-Light'
+    fontFamily: 'Poppins-Light'
 
   },
   loginButton: {
     backgroundColor: "#F37187",
     paddingVertical: 12,
     borderRadius: 20,
-    fontFamily:'Poppins-Light'
-,
+    fontFamily: 'Poppins-Light'
+    ,
     width: "100%",
     alignItems: "center",
   },
@@ -201,13 +196,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
-    fontFamily:'Poppins-Light'
+    fontFamily: 'Poppins-Light'
 
   },
   orText: {
     color: "#e63946",
     marginVertical: 15,
-    fontFamily:'Poppins-Light'
+    fontFamily: 'Poppins-Light'
 
   },
   googleButton: {
@@ -222,7 +217,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     marginBottom: 15,
-    fontFamily:'Poppins-Light'
+    fontFamily: 'Poppins-Light'
 
   },
   googleLogo: {
@@ -232,14 +227,14 @@ const styles = StyleSheet.create({
   },
   googleText: {
     fontSize: 15,
-    fontFamily:'Poppins-Light'
+    fontFamily: 'Poppins-Light'
     ,
     color: "#333",
   },
   registerText: {
     color: "#333",
     fontSize: 13,
-    fontFamily:'Poppins-Light'
+    fontFamily: 'Poppins-Light'
 
   },
   registerLink: {

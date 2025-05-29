@@ -1,17 +1,16 @@
-import { ScrollView, StyleSheet, View, Image, Text } from "react-native";
-import { Card, Avatar } from 'react-native-paper';
-import logoOnTerapia from '@/assets/images/logoOnTerapia.png'
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import Header from '@/components/geral/header';
 import { useAppContext } from "@/components/provider";
+import { Ionicons } from '@expo/vector-icons';
 import { Link } from "expo-router";
-import Header from '@/components/geral/header'
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Card } from 'react-native-paper';
 
 
 export default function Anotacoes() {
     const { pacientes } = useAppContext()
 
     return (
-        <ScrollView headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}>
+        <ScrollView headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }} style={{backgroundColor:'white'}}>
             <Header corFundo={"#F37187"} href='psicologo/home'></Header>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <Text style={styles.titulo}>ANOTAÇÕES</Text>

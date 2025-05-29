@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import Header from '@/components/geral/header';
-import { Card, RadioButton } from 'react-native-paper';
 import { useAppContext } from '@/components/provider';
+import { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Card, RadioButton } from 'react-native-paper';
 
 export default function NotificacaoPaciente() {
   const { notificacao_por_psicologo, usuarioAtual, marcarNotificacaoComoLidaPsicologo } = useAppContext();
@@ -56,10 +56,10 @@ export default function NotificacaoPaciente() {
   };
 
   return (
-    <>
+    <ScrollView style={{backgroundColor:'white'}}>
       <Header corFundo="#F37187" href='psicologo/home' />
       <ScrollView contentContainerStyle={styles.scrollView}>
-        
+
         <Text style={[styles.sectionHeader, styles.boldText]}>NÃO LIDAS</Text>
         {notificacoesNaoLidas.length > 0 ? (
           <>
@@ -92,15 +92,16 @@ export default function NotificacaoPaciente() {
         ) : (
           <Text style={styles.noNotificationsText}>Não existem notificações!</Text>
         )}
-      
+
+      </ScrollView>
     </ScrollView>
-    </>
   );
 }
 
 const styles = StyleSheet.create({
   scrollView: {
     padding: 20,
+    backgroundColor: 'white',
   },
   sectionHeader: {
     fontSize: 18,
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
-    backgroundColor: '#FCE4EC', 
+    backgroundColor: '#FCE4EC',
   },
   cardContent: {
     flexDirection: 'row',
