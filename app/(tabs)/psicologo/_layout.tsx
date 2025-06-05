@@ -26,11 +26,11 @@ export default function TabLayout() {
           fontFamily: 'Poppins-Light'
         },
       }}>
+      {/* Abas visíveis na barra de navegação inferior */}
       <Tabs.Screen
         name="home"
         options={{
           title: 'Home',
-
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
@@ -38,11 +38,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="pacientes/index"
+        name="pacientes/index" // Caminho relativo à pasta `psicologo`
         options={{
           title: 'Pacientes',
-
-
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'people' : 'people-outline'} color={color} />
           ),
@@ -53,8 +51,6 @@ export default function TabLayout() {
         name="agenda"
         options={{
           title: 'Agenda',
-
-
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'calendar' : 'calendar-outline'} color={color} />
           ),
@@ -63,10 +59,8 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="chat"
-
         options={{
           title: 'Chat',
-
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'chatbubble' : 'chatbubble-outline'} color={color} />
           ),
@@ -75,76 +69,121 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="perfilPsicologo"
-
         options={{
           title: 'Perfil',
-
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
           ),
           headerShown: false,
         }}
       />
+
+      {/* Telas que NÃO são abas, mas que o expo-router precisa conhecer
+          para navegar para elas dentro desta estrutura de abas.
+          Elas são definidas com href: null para não aparecerem na TabBar. */}
+
+      {/* Rotas de detalhes de paciente */}
       <Tabs.Screen
         name="pacientes/[id]/index"
-        options={{
-          href: null,
-        }}
+        options={{ href: null }}
       />
       <Tabs.Screen
         name="pacientes/cadastrarSessao"
-        options={{
-          href: null,
-        }}
+        options={{ href: null }}
       />
+
+      {/* Rotas de anotações */}
       <Tabs.Screen
         name="anotacoes/index"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="[sessao]/index"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="[sessao]/chat"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="[sessao]/meetPsicologo"
-        options={{
-          href: null,
-        }}
+        options={{ href: null }}
       />
       <Tabs.Screen
         name="anotacoes/[id]/index"
-        options={{
-          href: null,
-        }}
+        options={{ href: null }}
       />
       <Tabs.Screen
         name="anotacoes/[id]/fichaDeAvaliacao"
-        options={{
-          href: null,
-        }}
+        options={{ href: null }}
       />
       <Tabs.Screen
         name="anotacoes/[id]/detalhesFicha"
-        options={{
-          href: null,
-        }}
+        options={{ href: null }}
+      />
+
+      {/* Rotas de sessão e meet */}
+      <Tabs.Screen
+        name="[sessao]/index" // Corresponde a /psicologo/{id_sessao}
+        options={{ href: null }}
       />
       <Tabs.Screen
-        name="notificacaoPsicologo"
-        options={{
-          href: null,
-        }}
+        name="[sessao]/chat" // Corresponde a /psicologo/{id_sessao}/chat
+        options={{ href: null }}
       />
+      <Tabs.Screen
+        name="[sessao]/meetPsicologo" // Corresponde a /psicologo/{id_sessao}/meetPsicologo
+        options={{ href: null }}
+      />
+      {/* Rotas diversas */}
+      <Tabs.Screen
+        name="notificacaoPsicologo"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="evolucao-casos"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="declaracoes"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="personalizarAnamnese"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="preencher-declaracao"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="ProntuarioPaciente"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="prontuarios"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="RoleSelect"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="VisualizarAnamnese"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="analiseEmocional"
+        options={{ href: null }}
+      />
+
+      {/* AS ROTAS QUE VOCÊ QUER NAVEGAR DIRETAMENTE E JÁ EXISTEM COMO ARQUIVOS:
+          teleconsulta.js e VideoCall.js.
+          Se elas não são abas, elas devem ser definidas com href: null.
+          É CRUCIAL que o nome aqui seja o nome do arquivo. */}
+      <Tabs.Screen
+        name="teleconsulta" // Nome do arquivo teleconsulta.js
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="VideoCall" // Nome do arquivo VideoCall.js
+        options={{ href: null }}
+      />
+
+      {/* Se iniciar-sessao.js também não é uma aba visível: */}
+      <Tabs.Screen
+        name="iniciar-sessao"
+        options={{ href: null }}
+      />
+
     </Tabs>
   );
 }

@@ -184,19 +184,20 @@ const styles = StyleSheet.create({
 
   },
   loginButton: {
-    backgroundColor: "#F37187",
-    paddingVertical: 12,
-    borderRadius: 20,
-    fontFamily: 'Poppins-Light'
-    ,
-    width: "100%",
-    alignItems: "center",
-  },
-  loginText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-    fontFamily: 'Poppins-Light'
+  backgroundColor: "#F37187",
+  width: 140,        // mais largo
+  height: 55,        // altura menor
+  borderRadius: 27,  // metade da altura
+  justifyContent: "center",
+  alignItems: "center",
+  marginVertical: 20, // espaçamento em cima e embaixo
+},
+loginText: {
+  color: "#fff",
+  fontSize: 18,
+  fontWeight: "bold",
+  fontFamily: "Poppins-Bold",
+  textAlign: "center",
 
   },
   orText: {
