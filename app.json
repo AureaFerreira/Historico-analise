@@ -16,7 +16,13 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "white"
       },
-      "edgeToEdgeEnabled": true
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "CAMERA",
+        "RECORD_AUDIO"
+      ],
+      "package": "com.aureaferreiraf11.onterapia"
     },
     "web": {
       "bundler": "metro",

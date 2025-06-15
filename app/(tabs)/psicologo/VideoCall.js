@@ -1,20 +1,20 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import {
-  View,
-  StyleSheet,
-  PermissionsAndroid,
-  Platform,
-  Alert,
-  ActivityIndicator,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Linking,
-  Image,
-} from 'react-native';
-import { WebView } from 'react-native-webview';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Linking,
+  PermissionsAndroid,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { WebView } from 'react-native-webview';
 
 import logoOnTerapia from '@/assets/images/logoOnTerapia.png';
 
@@ -27,6 +27,7 @@ export default function VideoCall() {
   const [granted, setGranted] = useState(false);
   const [acceptedTerms, setAccepted] = useState(false);
 
+  // Solicitar permissões de câmera e microfone
   useEffect(() => {
     (async () => {
       if (Platform.OS === 'android') {
@@ -35,6 +36,7 @@ export default function VideoCall() {
             PermissionsAndroid.PERMISSIONS.CAMERA,
             PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
           ]);
+
           const cameraGranted = res[PermissionsAndroid.PERMISSIONS.CAMERA] === 'granted';
           const audioGranted = res[PermissionsAndroid.PERMISSIONS.RECORD_AUDIO] === 'granted';
 
@@ -68,6 +70,7 @@ export default function VideoCall() {
     const needsCamera = resources.includes('CAMERA') || resources.includes('VIDEO_CAPTURE');
     const needsMicrophone = resources.includes('MICROPHONE') || resources.includes('AUDIO_CAPTURE');
 
+    // Concede as permissões se estiverem sendo requisitadas
     if ((needsCamera || needsMicrophone) && granted) {
       grant();
     } else {
@@ -100,7 +103,7 @@ export default function VideoCall() {
           Termos e Condições da Teleconsulta
         </Text>
 
-        {[
+        {[ 
           'Esta sessão será gravada para fins de segurança e qualidade',
           'As gravações são confidenciais e de acesso restrito',
           'Você pode solicitar a exclusão da gravação a qualquer momento',
@@ -137,17 +140,26 @@ export default function VideoCall() {
 
   return (
     <View style={styles.container}>
+      {/* Atraso de 1 segundo para permitir a inicialização das permissões antes de carregar o WebView */}
       <WebView
-        ref={webviewRef}
-        source={{ uri: `https://meet.jit.si/${roomName}` }}
-        style={styles.webview}
-        onPermissionRequest={onPermissionRequest}
-        javaScriptEnabled
-        allowsInlineMediaPlayback
-        mediaPlaybackRequiresUserAction={false}
-        startInLoadingState
-        renderLoading={() => <Loader />}
-      />
+  ref={webviewRef}
+  source={{ uri: `https://meet.jit.si/${roomName}` }}
+  style={styles.webview}
+  onPermissionRequest={onPermissionRequest}
+  javaScriptEnabled
+  allowsInlineMediaPlayback={true}  // Permite a reprodução de mídia inline (importante para a câmera)
+  mediaPlaybackRequiresUserAction={false}  // Permite a reprodução automática de mídia
+  allowUniversalAccessFromFileURLs={true}  // Permite o acesso universal a arquivos locais
+  allowFileAccess={true}  // Permite o acesso a arquivos locais
+  startInLoadingState
+  renderLoading={() => <Loader />}
+  onError={(err) => console.log('WebView Error:', err)}  // Log de erros do WebView
+  onHttpError={(syntheticEvent) => {
+    const { nativeEvent } = syntheticEvent;
+    console.warn('HTTP Error: ', nativeEvent.statusCode);
+  }}
+/>
+
     </View>
   );
 }

@@ -1,22 +1,22 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  FlatList,
-  LayoutAnimation,
-  UIManager,
-  Platform,
-  TextInput,
-  Image,
-} from 'react-native';
-import Svg, { Polyline, Text as SvgText, Circle, Line, G, Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Image,
+  LayoutAnimation,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  UIManager,
+  View,
+} from 'react-native';
+import Svg, { Circle, Defs, G, Line, LinearGradient, Path, Polyline, Stop, Text as SvgText } from 'react-native-svg';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -71,7 +71,7 @@ export default function AnaliseEmocional() {
   const fetchAnalysis = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://192.168.15.101:8001/analyze-fixed-video');
+      const res = await fetch('http://172.29.134.84:8001/analyze-fixed-video');
       if (!res.ok) throw new Error(`Erro na resposta da API: ${res.status} ${res.statusText}`);
       const json = await res.json();
       setAnalysis(json);
