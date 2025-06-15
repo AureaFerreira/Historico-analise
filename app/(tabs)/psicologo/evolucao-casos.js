@@ -1,66 +1,79 @@
 import React, { useState, useEffect } from 'react';
 import {
-    View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ScrollView, ActivityIndicator, Image
+    View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ScrollView, ActivityIndicator, Image, Alert // Importar Alert para feedback
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import logo from '@/assets/images/logoOnTerapia.png';
 
+// ***** IMPORTANTE: Importe seu cliente Supabase configurado aqui *****
+// Certifique-se de que o caminho para o seu arquivo supabase.js está correto.
+// Por exemplo, se está em 'lib/supabase.js'
+import { supabase } from '../../../../onterapia-dsi-2501/utils/supabase';
+
 export default function EvolucaoCasos() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [casos, setCasos] = useState([]);
+    const [pacientes, setPacientes] = useState([]); // Renomeado de 'casos' para 'pacientes' para refletir o dado real
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        const fetchCasos = async () => {
+        const fetchPacientes = async () => { // Função para buscar pacientes do Supabase
             setLoading(true);
             try {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                const mockData = [
-                    { 
-                        id: 1, 
-                        paciente: 'Ana Silva', 
-                        data: '15/06/2023', 
-                        status: 'Em andamento',
-                        tipo: 'Análise emocional por vídeo',
-                        video: "consulta_ana_silva.mp4"
-                    },
-                    { 
-                        id: 2, 
-                        paciente: 'Carlos Oliveira', 
-                        data: '22/06/2023', 
-                        status: 'Concluído',
-                        tipo: 'Expressões faciais e sentimentos',
-                        video: "consulta_carlos_oliveira.mp4"
-                    },
-                    { 
-                        id: 3, 
-                        paciente: 'Mariana Costa', 
-                        data: '05/07/2023', 
-                        status: 'Em andamento',
-                        tipo: 'Áudio + Vídeo com expressividade',
-                        video: "consulta_mariana_costa.mp4"
-                    },
-                ];
-                setCasos(mockData);
+                // ***** AQUI ESTÁ A LIGAÇÃO COM O SUPABASE *****
+                // Use o nome EXATO da sua tabela de pacientes no Supabase.
+                // Na sua imagem anterior, a tabela aparecia como 'Paciente'.
+                // Se no Supabase ela está em minúsculo (ex: 'paciente'), mude aqui.
+                const { data, error } = await supabase
+                    .from('Paciente') // <--- VERIFIQUE E AJUSTE 'Paciente' para o nome EXATO da sua tabela
+                    .select('id, nome, dataNascimento'); // Selecione as colunas que você precisa
+
+                if (error) {
+                    console.error("Erro ao buscar pacientes:", error);
+                    Alert.alert("Erro", "Não foi possível carregar os pacientes.");
+                    setPacientes([]); // Limpa a lista em caso de erro
+                } else {
+                    // Mapeia os dados do Supabase para o formato que você já estava usando no seu FlatList
+                    // Adicionei 'idPaciente' para garantir que ele seja passado para a próxima tela.
+                    const formattedPacientes = data.map(p => ({
+                        id: p.id, // ID original do paciente (BIGINT do Supabase)
+                        paciente: p.nome, // Nome do paciente
+                        data: p.dataNascimento ? new Date(p.dataNascimento).toLocaleDateString('pt-BR') : 'Não informada',
+                        status: 'Em andamento', // Estes são exemplos, podem ser dinâmicos se você tiver uma tabela de 'casos'
+                        tipo: 'Análise emocional por vídeo', // Exemplo de tipo de caso
+                        idPaciente: p.id // IMPORTANTE: Passa o ID do paciente para a próxima tela
+                    }));
+                    setPacientes(formattedPacientes);
+                }
             } catch (error) {
-                console.error("Erro ao buscar casos:", error);
+                console.error("Erro inesperado ao buscar pacientes:", error);
+                Alert.alert("Erro", "Ocorreu um erro inesperado ao carregar os pacientes.");
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchCasos();
-    }, []);
+        fetchPacientes(); // Chama a função ao carregar o componente
+    }, []); // O array de dependências vazio garante que o useEffect rode apenas uma vez ao montar o componente
 
-    const filteredCasos = casos.filter(caso =>
-        caso.paciente.toLowerCase().includes(searchTerm.toLowerCase())
+    // Ajusta o filtro para a nova variável 'pacientes'
+    const filteredPacientes = pacientes.filter(p =>
+        p.paciente.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleSelectCase = (caso) => {
-        router.push('/psicologo/analiseEmocional');
+    const handleSelectCase = (pacienteData) => {
+        // ***** AQUI ESTÁ A LIGAÇÃO PARA A TELA DE ANÁLISE EMOCIONAL *****
+        // Passa o id (numérico) do paciente e o nome para a próxima tela.
+        router.push({
+            pathname: '/psicologo/analiseEmocional',
+            params: {
+                paciente: pacienteData.paciente, // Passa o nome do paciente
+                idPaciente: pacienteData.id,     // Passa o ID numérico do paciente (importante para salvar no Supabase)
+                data: pacienteData.data,         // Passa a data do paciente (data de cadastro ou similar)
+            }
+        });
     };
 
     return (
@@ -90,18 +103,19 @@ export default function EvolucaoCasos() {
 
             {loading ? (
                 <ActivityIndicator size="large" color="#F37187" style={{ marginTop: 50 }} />
-            ) : filteredCasos.length > 0 ? (
+            ) : filteredPacientes.length > 0 ? (
                 <FlatList
-                    data={filteredCasos}
-                    keyExtractor={item => item.id.toString()}
+                    data={filteredPacientes}
+                    keyExtractor={item => item.id.toString()} // Usa o ID do paciente como chave
                     renderItem={({ item }) => (
-                        <TouchableOpacity 
-                            style={styles.caseCard} 
-                            onPress={() => handleSelectCase(item)}
+                        <TouchableOpacity
+                            style={styles.caseCard}
+                            onPress={() => handleSelectCase(item)} // Passa o item completo
                         >
                             <View style={styles.caseInfo}>
                                 <Text style={styles.caseName}>{item.paciente}</Text>
-                                <Text style={styles.caseDate}>{item.data}</Text>
+                                <Text style={styles.caseDate}>Data de Cadastro: {item.data}</Text>
+                                {/* Exibe o status e tipo, que podem ser ajustados para refletir dados reais */}
                                 <Text style={styles.caseType}>{item.tipo}</Text>
                             </View>
                             <View style={[
@@ -117,7 +131,7 @@ export default function EvolucaoCasos() {
                 />
             ) : (
                 <View style={styles.noResultsContainer}>
-                    <Text style={styles.noResultsText}>Nenhum caso encontrado</Text>
+                    <Text style={styles.noResultsText}>Nenhum paciente encontrado</Text>
                 </View>
             )}
         </View>

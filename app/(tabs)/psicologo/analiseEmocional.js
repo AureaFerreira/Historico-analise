@@ -71,7 +71,7 @@ export default function AnaliseEmocional() {
   const fetchAnalysis = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://172.29.134.84:8001/analyze-fixed-video');
+      const res = await fetch('http://192.168.15.11:8001/analyze-fixed-video');
       if (!res.ok) throw new Error(`Erro na resposta da API: ${res.status} ${res.statusText}`);
       const json = await res.json();
       setAnalysis(json);
