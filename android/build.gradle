@@ -1,0 +1,68 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+  repositories {
+    google()
+    mavenCentral()
+  }
+  dependencies {
+    classpath('com.android.tools.build:gradle:8.2.2')
+    classpath('com.facebook.react:react-native-gradle-plugin')
+    classpath('org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21')
+  }
+}
+
+// ✅ VERSÕES ESTÁVEIS E COMPATÍVEIS COM AGP 8.2.2 E SDK 35
+ext {
+  minSdkVersion = 24
+  compileSdkVersion = 35
+  targetSdkVersion = 35
+
+  // Força versões estáveis para libs que causavam erro de <color>
+  materialVersion = "1.11.0"
+  appCompatVersion = "1.6.1"
+  playServicesBase = "18.3.0"
+}
+
+// 🔧 Caminho para o React Native no node_modules
+def reactNativeAndroidDir = new File(
+  providers.exec {
+    workingDir(rootDir)
+    commandLine("node", "--print", "require.resolve('react-native/package.json')")
+  }.standardOutput.asText.get().trim(),
+  "../android"
+)
+
+// 🔍 Repositórios
+allprojects {
+  repositories {
+    maven {
+      // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+      url(reactNativeAndroidDir)
+    }
+
+    google()
+    mavenCentral()
+    maven { url 'https://www.jitpack.io' }
+  }
+}
+
+apply plugin: "expo-root-project"
+apply plugin: "com.facebook.react.rootproject"
+
+// ✅ FIX: resolve conflitos de dependência de bibliotecas que causam erro de build
+subprojects { sub ->
+  sub.configurations.all {
+    resolutionStrategy.eachDependency { details ->
+      if (details.requested.group == 'com.google.android.material') {
+        details.useVersion rootProject.ext.materialVersion
+      }
+      if (details.requested.group == 'androidx.appcompat') {
+        details.useVersion rootProject.ext.appCompatVersion
+      }
+      if (details.requested.name == 'play-services-base') {
+        details.useVersion rootProject.ext.playServicesBase
+      }
+    }
+  }
+}

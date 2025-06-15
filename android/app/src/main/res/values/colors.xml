@@ -1,0 +1,10 @@
+<resources>
+  <!-- suas cores -->
+  <color name="splashscreen_background">#FFFFFF</color>
+  <color name="iconBackground">#FFFFFF</color>
+  <color name="colorPrimary">#023C69</color>
+  <color name="colorPrimaryDark">#FFFFFF</color>
+
+  <!-- alias para bibliotecas que ainda usam string "white" -->
+  <color name="white">#FFFFFF</color>
+</resources>
