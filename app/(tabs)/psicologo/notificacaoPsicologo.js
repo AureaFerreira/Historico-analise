@@ -1,155 +1,216 @@
 import Header from '@/components/geral/header';
 import { useAppContext } from '@/components/provider';
-import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Card, RadioButton } from 'react-native-paper';
 
-export default function NotificacaoPaciente() {
-  const { notificacao_por_psicologo, usuarioAtual, marcarNotificacaoComoLidaPsicologo } = useAppContext();
+/**
+ * Tela de notificações do psicólogo
+ * - Mostra NÃO LIDAS e LIDAS
+ * - Se o provider não devolver nada, exibe um exemplo estático
+ */
+export default function NotificacaoPsicologo() {
+  const {
+    notificacao_por_psicologo,
+    marcarNotificacaoComoLidaPsicologo,
+    usuarioAtual,
+    pacientes,
+  } = useAppContext();
 
-  const [notificacoesNaoLidas, setNotificacoesNaoLidas] = useState([]);
-  const [notificacoesSelecionadas, setNotificacoesSelecionadas] = useState([]);
+  const [naoLidas, setNaoLidas] = useState([]);
+  const [lidas, setLidas]   = useState([]);
+  const [selecionadas, setSelecionadas] = useState([]);
 
-  useEffect(() => {
-    const fetchSessoes = async () => {
+  /* -------- nome do paciente (join opcional) -------- */
+  const nomePaciente = (s) =>
+    s.Paciente?.nome ||
+    pacientes.find((p) => p.id === s.IdPaciente)?.nome ||
+    'Paciente';
+
+  /* -------- formatar data -------- */
+  const fmtDataHora = (d, h) =>
+    new Date(`${d}T${h}`).toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+  /* -------- carrega do provider -------- */
+  const carregar = useCallback(async () => {
+    try {
       const data = await notificacao_por_psicologo(usuarioAtual.id);
 
-      data.sort((sessao1, sessao2) => {
-        const dataHoraSessao1 = new Date(`${sessao1.data} ${sessao1.hora_inicio}`);
-        const dataHoraSessao2 = new Date(`${sessao2.data} ${sessao2.hora_inicio}`);
-        return dataHoraSessao1 - dataHoraSessao2;
-      });
-
-      const dataHoraAtual = new Date();
-      const sessoesFuturas = data.filter(sessao => {
-        const dataHoraSessao = new Date(`${sessao.data} ${sessao.hora_inicio}`);
-        return dataHoraSessao > dataHoraAtual;
-      });
-
-      setNotificacoesNaoLidas(sessoesFuturas);
-    };
-
-    fetchSessoes();
-  }, [notificacao_por_psicologo, usuarioAtual]);
-
-  const toggleSelecionada = (sessao) => {
-
-    if (notificacoesSelecionadas.includes(sessao)) {
-
-      const novasSelecionadas = notificacoesSelecionadas.filter(s => s !== sessao);
-      setNotificacoesSelecionadas(novasSelecionadas);
-    } else {
-
-      setNotificacoesSelecionadas([...notificacoesSelecionadas, sessao]);
+      if (data.length) {
+        data.sort(
+          (a, b) =>
+            new Date(`${a.data}T${a.hora_inicio}`) -
+            new Date(`${b.data}T${b.hora_inicio}`)
+        );
+        setNaoLidas(data.filter((s) => !s.notificacaoPsicologo));
+        setLidas(data.filter((s) => s.notificacaoPsicologo));
+      } else {
+        // fallback estático
+        const exemplo = [
+          {
+            idSessao: 'demo‑01',
+            IdPaciente: pacientes[0]?.id || 'demoPac',
+            data: '2025-06-20',
+            hora_inicio: '14:00',
+            notificacaoPsicologo: false,
+          },
+          {
+            idSessao: 'demo‑01',
+            IdPaciente: pacientes[1]?.id || 'demoPac',
+            data: '2025-06-20',
+            hora_inicio: '14:00',
+            notificacaoPsicologo: false,
+          },
+          {
+            idSessao: 'demo‑01',
+            IdPaciente: pacientes[3]?.id || 'demoPac',
+            data: '2025-06-20',
+            hora_inicio: '14:00',
+            notificacaoPsicologo: false,
+          },
+        ];
+        setNaoLidas(exemplo);
+        setLidas([]);
+      }
+    } catch (err) {
+      console.error('Notificação – erro:', err.message);
+      // fallback estático em caso de erro
+      const exemploErro = [
+        {
+          idSessao: 'demo‑erro',
+          IdPaciente: pacientes[0]?.id || 'demoPac',
+          data: '2025-06-20',
+          hora_inicio: '15:30',
+          notificacaoPsicologo: false,
+        },
+      ];
+      setNaoLidas(exemploErro);
+      setLidas([]);
     }
-  };
+  }, [notificacao_por_psicologo, usuarioAtual.id, pacientes]);
 
+  useEffect(() => { carregar(); }, [carregar]);
+
+  /* -------- seleção múltipla -------- */
+  const toggle = (s) =>
+    setSelecionadas((prev) =>
+      prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
+    );
+
+  /* -------- marcar como lida -------- */
   const marcarComoLida = async () => {
-    const novasNaoLidas = notificacoesNaoLidas.filter(n => !notificacoesSelecionadas.includes(n));
-    setNotificacoesNaoLidas(novasNaoLidas);
-
-    for (const sessao of notificacoesSelecionadas) {
-      await marcarNotificacaoComoLidaPsicologo(sessao.idSessao);
-    }
-
-    setNotificacoesSelecionadas([]);
+    await Promise.all(
+      selecionadas.map((s) =>
+        typeof s.idSessao === 'string' && !s.idSessao.startsWith('demo')
+          ? marcarNotificacaoComoLidaPsicologo(s.idSessao)
+          : null
+      )
+    );
+    setNaoLidas((prev) => prev.filter((s) => !selecionadas.includes(s)));
+    setLidas((prev) => [...selecionadas, ...prev]);
+    setSelecionadas([]);
   };
 
-  return (
-    <ScrollView style={{backgroundColor:'white'}}>
-      <Header corFundo="#F37187" href='psicologo/home' />
-      <ScrollView contentContainerStyle={styles.scrollView}>
+  /* -------- card -------- */
+  const CardNotif = ({ s, podeSelecionar }) => (
+    <TouchableOpacity disabled={!podeSelecionar} onPress={() => toggle(s)}>
+      <Card style={styles.card}>
+        <Card.Content style={styles.cardContent}>
+          {podeSelecionar && (
+            <RadioButton
+              value={s.idSessao}
+              status={selecionadas.includes(s) ? 'checked' : 'unchecked'}
+              onPress={() => toggle(s)}
+            />
+          )}
+          <View style={styles.textContainer}>
+            <Text style={styles.descricao}>
+              Sessão com {nomePaciente(s)}
+            </Text>
+            <Text style={styles.titulo}>
+              {fmtDataHora(s.data, s.hora_inicio)}
+            </Text>
+          </View>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
+  );
 
-        <Text style={[styles.sectionHeader, styles.boldText]}>NÃO LIDAS</Text>
-        {notificacoesNaoLidas.length > 0 ? (
+  /* -------- render -------- */
+  return (
+    <ScrollView style={{ backgroundColor: 'white' }}>
+      <Header corFundo="#F37187" href="psicologo/home" />
+
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        {/* NÃO LIDAS */}
+        <Text style={[styles.sectionHeader, styles.bold]}>NÃO LIDAS</Text>
+        {naoLidas.length ? (
           <>
             <View style={styles.marcarComoLidaContainer}>
-              <Text style={styles.marcarComoLida} onPress={marcarComoLida}>MARCAR COMO LIDA</Text>
+              <Text style={styles.marcarComoLidaBtn} onPress={marcarComoLida}>
+                MARCAR COMO LIDA
+              </Text>
             </View>
-            {notificacoesNaoLidas.map((sessao, index) => (
-              <TouchableOpacity key={index} onPress={() => toggleSelecionada(sessao)}>
-                <Card style={styles.cardNotLidas}>
-                  <Card.Content>
-                    <View style={styles.cardContent}>
-                      <RadioButton
-                        value={sessao}
-                        status={notificacoesSelecionadas.includes(sessao) ? 'checked' : 'unchecked'}
-                        onPress={() => toggleSelecionada(sessao)}
-                      />
-                      <View style={styles.textContainer}>
-                        <Text style={styles.descricao}>Nova sessão agendada</Text>
-                        <Text style={styles.titulo}>Paciente: {sessao.Paciente.nome}</Text>
-                        <Text style={styles.titulo}>Data: {sessao.data}</Text>
-                        <Text style={styles.titulo}>Hora de Início: {sessao.hora_inicio}</Text>
-                        <Text style={styles.titulo}>Quantidade de Sessões: {sessao.qtdSessoes}</Text>
-                      </View>
-                    </View>
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
+
+            {naoLidas.map((s) => (
+              <CardNotif key={s.idSessao} s={s} podeSelecionar />
             ))}
           </>
         ) : (
-          <Text style={styles.noNotificationsText}>Não existem notificações!</Text>
+          <Text style={styles.noNotificationsText}>
+            Nenhuma notificação pendente 🙂
+          </Text>
         )}
 
+        {/* LIDAS */}
+        <Text style={[styles.sectionHeader, styles.bold, { marginTop: 25 }]}>
+          LIDAS
+        </Text>
+        {lidas.length ? (
+          lidas.map((s) => <CardNotif key={s.idSessao} s={s} />)
+        ) : (
+          <Text style={styles.noNotificationsText}>
+            Você ainda não leu notificações.
+          </Text>
+        )}
       </ScrollView>
     </ScrollView>
   );
 }
 
+/* ---------- estilos ---------- */
 const styles = StyleSheet.create({
-  scrollView: {
-    padding: 20,
-    backgroundColor: 'white',
-  },
+  scrollView: { padding: 20, backgroundColor: 'white' },
   sectionHeader: {
     fontSize: 18,
     color: '#F37187',
-    fontFamily: 'Poppins-Bold',
-    marginBottom: 10,
     textAlign: 'center',
+    marginBottom: 10,
   },
-  boldText: {
-    fontFamily: 'Poppins-Bold',
-  },
-  cardNotLidas: {
+  bold: { fontFamily: 'Poppins-Bold' },
+  card: {
     marginBottom: 15,
     borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
     backgroundColor: '#FCE4EC',
+    elevation: 2,
   },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
-  },
-  textContainer: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  titulo: {
-    fontSize: 12,
-    color: '#333',
-    fontFamily: 'Poppins-Light',
-  },
-  descricao: {
-    fontSize: 14,
-    color: '#666',
-    fontFamily: 'Poppins-Light',
-  },
-  marcarComoLidaContainer: {
-    alignItems: 'flex-end',
-    marginBottom: 10,
-  },
-  marcarComoLida: {
-    fontSize: 14,
-    color: '#F37187',
-  },
+  cardContent: { flexDirection: 'row', alignItems: 'center', padding: 15 },
+  textContainer: { flex: 1, marginLeft: 10 },
+  titulo: { fontSize: 12, color: '#333', fontFamily: 'Poppins-Light' },
+  descricao: { fontSize: 14, color: '#666', fontFamily: 'Poppins-Light' },
+  marcarComoLidaContainer: { alignItems: 'flex-end', marginBottom: 10 },
+  marcarComoLidaBtn: { fontSize: 14, color: '#F37187' },
   noNotificationsText: {
     fontSize: 16,
     color: '#666',

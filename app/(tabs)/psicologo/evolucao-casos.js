@@ -67,7 +67,12 @@ export default function EvolucaoCasos() {
         // ***** AQUI ESTÁ A LIGAÇÃO PARA A TELA DE ANÁLISE EMOCIONAL *****
         // Passa o id (numérico) do paciente e o nome para a próxima tela.
         router.push({
-            pathname: '/psicologo/analiseEmocional',
+            // MUITO IMPORTANTE: O 'pathname' DEVE CORRESPONDER EXATAMENTE
+            // ao caminho da pasta/arquivo do componente AnaliseEmocional dentro da pasta 'app'.
+            // Exemplos:
+            // Se o arquivo for 'app/psicologo/analiseEmocional/index.js' -> '/psicologo/analiseEmocional' (atual)
+            // Se o arquivo for 'app/psicologo/AnaliseEmocional.js' (com 'A' maiúsculo) -> '/psicologo/AnaliseEmocional'
+            pathname: '/psicologo/analiseEmocional', // Verifique a capitalização e o nome da pasta/arquivo!
             params: {
                 paciente: pacienteData.paciente, // Passa o nome do paciente
                 idPaciente: pacienteData.id,     // Passa o ID numérico do paciente (importante para salvar no Supabase)

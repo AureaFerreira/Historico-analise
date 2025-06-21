@@ -689,29 +689,70 @@ export default function AppProvider({ children }) {
     }
   };
 
-  const notificacao_por_psicologo = async (idPsicologo) => {
-    try {
-      const { data: sessoes, error } = await supabase
-        .from('Sessao')
-        .select(`
-                idSessao,
-                data,
-                hora_inicio,
-                qtdSessoes,
-                Paciente:Paciente(
-                nome
-                )
-              `)
-        .eq('idPsicologo', idPsicologo)
-        .eq('notificacaoPsicologo', false);
+const notificacao_por_psicologo = async (idPsicologo) => {
+  const { data, error } = await supabase
+    .from('Sessao')
+    .select(
+      `
+        idSessao,
+        IdPaciente,
+        data,
+        hora_inicio,
+        qtdSessoes,
+        notificacaoPsicologo,
+        Paciente ( id, nome )
+      `
+    )
+    .eq('idPsicologo', idPsicologo);   // <-- atenção ao nome exato da coluna
 
-      if (error) throw error;
-      return sessoes;
-    } catch (error) {
-      console.error('Erro ao buscar sessões:', error.message);
-      return [];
+  if (error) {
+    console.error('notificacao_por_psicologo', error.message);
+    return [];
+  }
+  return data || [];
+};
+const enviarAnaliseFacial = async ({
+  idPaciente, // Alterado de 'idpaciente' para 'idPaciente'
+  nome_arquivo_video,
+  distribuicao_emocoes,
+  analise_detalhada,
+  notas_gerais = '',
+  notas_grafico = ''
+}) => {
+  // ***** ESTE É O CONSOLE.LOG CRUCIAL PARA DEPURAR O ID NO PROVIDER *****
+  console.log('Provider: idPaciente recebido ANTES do insert Supabase (Corrigido):', idPaciente);
+
+  try {
+    const duracao_total = analise_detalhada && analise_detalhada.length > 0
+      ? Math.max(...analise_detalhada.map(d => d.second || 0))
+      : 0;
+
+    const { data, error } = await supabase
+      .from('reconhecimento_facial')
+      .insert([{
+        idpaciente: idPaciente, // Usando o idPaciente com 'P' maiúsculo para a coluna
+        data_analise: new Date().toISOString(),
+        nome_arquivo_video,
+        duracao_total,
+        distribuicao_emocoes,
+        analise_detalhada,
+        notas_gerais,
+        notas_grafico
+      }]);
+
+    if (error) {
+      // É útil logar o erro completo do Supabase aqui para mais detalhes
+      console.error('Provider: Erro do Supabase ao enviar análise facial:', error); 
+      throw error; // Relança o erro para ser capturado no catch
     }
-  };
+
+    console.log('Provider: Análise facial enviada com sucesso:', data); // Log de sucesso
+    return { success: true, data };
+  } catch (err) {
+    console.error('Provider: Erro geral na função enviarAnaliseFacial:', err.message);
+    return { success: false, error: err.message };
+  }
+};
 
   const marcarSessaoConcluida = async (idSessao) => {
     try {
@@ -816,6 +857,7 @@ export default function AppProvider({ children }) {
       inserirMeet,
       contratoAssinado,
       timesSessao,
+      enviarAnaliseFacial,
       setTimesData
     }}>
       {children}
