@@ -81,6 +81,19 @@ export default function EvolucaoCasos() {
         });
     };
 
+    // --- NOVA FUNÇÃO PARA NAVEGAR PARA O HISTÓRICO ---
+    const handleViewHistory = (pacienteData) => {
+        router.push({
+            // Crie um novo arquivo/pasta para o histórico, por exemplo:
+            // app/psicologo/historicoPaciente/index.js ou app/psicologo/HistoricoPaciente.js
+            pathname: '/psicologo/historicoPaciente', // <-- ATUALIZE ESTE CAMINHO!
+            params: {
+                idPaciente: pacienteData.id,
+                nomePaciente: pacienteData.paciente, // Pode ser útil exibir o nome na tela de histórico
+            }
+        });
+    };
+
     return (
         <View style={styles.container}>
             <LinearGradient colors={['#F37187', '#FF7F9F']} style={styles.capa}>
@@ -115,7 +128,7 @@ export default function EvolucaoCasos() {
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             style={styles.caseCard}
-                            onPress={() => handleSelectCase(item)} // Passa o item completo
+                            onPress={() => handleSelectCase(item)} // Mantém o onPress para ir para Análise Emocional
                         >
                             <View style={styles.caseInfo}>
                                 <Text style={styles.caseName}>{item.paciente}</Text>
@@ -129,7 +142,15 @@ export default function EvolucaoCasos() {
                             ]}>
                                 <Text style={styles.statusText}>{item.status}</Text>
                             </View>
-                            <Ionicons name="chevron-forward-outline" size={20} color="#9CA3AF" />
+                            {/* --- NOVO BOTÃO PARA HISTÓRICO --- */}
+                            <TouchableOpacity
+                                onPress={() => handleViewHistory(item)}
+                                style={styles.historyButton} // Adicione este estilo
+                            >
+                                <Text style={styles.historyButtonText}>Histórico</Text>
+                            </TouchableOpacity>
+                            {/* Ícone original para navegação, se ainda desejar */}
+                            {/* <Ionicons name="chevron-forward-outline" size={20} color="#9CA3AF" /> */}
                         </TouchableOpacity>
                     )}
                     contentContainerStyle={styles.listContainer}
@@ -258,5 +279,18 @@ const styles = StyleSheet.create({
     noResultsText: {
         fontSize: 16,
         color: '#6B7280',
+    },
+    // --- NOVO ESTILO PARA O BOTÃO DE HISTÓRICO ---
+    historyButton: {
+        marginLeft: 10, // Espaçamento entre o status badge e o novo botão
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        backgroundColor: '#E0E7FF', // Um tom de azul claro para o botão
+        borderRadius: 5,
+    },
+    historyButtonText: {
+        color: '#4F46E5', // Cor do texto que combine com o botão
+        fontWeight: 'bold',
+        fontSize: 12,
     }
 });

@@ -183,6 +183,10 @@ export default function TabLayout() {
         name="iniciar-sessao"
         options={{ href: null }}
       />
+      <Tabs.Screen
+        name="historicoPaciente"
+        options={{ href: null }}
+      />
 
     </Tabs>
   );
